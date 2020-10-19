@@ -126,7 +126,7 @@ namespace FileTransfer
         private:
             ip::tcp::socket m_socket;
             Packet m_packet;
-            const std::filesystem::path& m_working_directory;
+            const std::filesystem::path& m_workspace;
             File m_file;
 
             void
@@ -137,7 +137,7 @@ namespace FileTransfer
                     if(m_packet.start_code == START_CODE)
                     {
                         process_packet(m_file, m_packet);
-                        if(prepare_to_receive_data(m_working_directory, m_file))
+                        if(prepare_to_receive_data(m_workspace, m_file))
                         {
                             call_for_data(m_socket, m_packet.identifier, Utils::file_size(m_file.stream));
                         }
@@ -161,7 +161,7 @@ namespace FileTransfer
                 asio::io_service& io_service,
                 const std::filesystem::path& working_directory) : 
                 m_socket(io_service),
-                m_working_directory(working_directory)
+                m_workspace(working_directory)
             {
             }
 
@@ -195,14 +195,14 @@ struct Server::Impl
     bool m_running{false};
     uint16_t m_port{0};
     uint32_t m_address{0};
-    std::filesystem::path m_working_directory;
+    std::filesystem::path m_workspace;
 
     asio::io_service m_io_service;
 
     std::unique_ptr<ip::tcp::acceptor> m_acceptor_uptr;
     std::list<std::shared_ptr<ServerConnection>> m_connections;
 
-    Impl() : m_working_directory{std::filesystem::current_path()}
+    Impl() : m_workspace{std::filesystem::current_path()}
     {
     }
 
@@ -212,17 +212,17 @@ struct Server::Impl
     }
 
     const std::filesystem::path&
-    workingDirectory() const
+    workspace() const
     {
-        return m_working_directory;
+        return m_workspace;
     }
 
     bool
-    workingDirectory(const std::filesystem::path& folder)
+    workspace(const std::filesystem::path& folder)
     {
         if(std::filesystem::exists(folder))
         {
-            m_working_directory = folder;
+            m_workspace = folder;
             return true;
         }
         return false;
@@ -307,7 +307,7 @@ struct Server::Impl
     void
     start_accept()
     {
-        auto connection_sptr{m_connections.emplace_back(std::make_shared<ServerConnection>(m_io_service, m_working_directory))};
+        auto connection_sptr{m_connections.emplace_back(std::make_shared<ServerConnection>(m_io_service, m_workspace))};
         m_acceptor_uptr->async_accept(
             connection_sptr->socket(),
             boost::bind(
@@ -328,15 +328,15 @@ Server::~Server()
 }
 
 const std::filesystem::path&
-Server::workingDirectory() const
+Server::workspace() const
 {
-    return m_pimpl->workingDirectory();
+    return m_pimpl->workspace();
 }
 
 bool
-Server::workingDirectory(const std::filesystem::path& folder)
+Server::workspace(const std::filesystem::path& folder)
 {
-    return m_pimpl->workingDirectory(folder);
+    return m_pimpl->workspace(folder);
 }
 
 uint16_t

@@ -16,8 +16,8 @@ namespace FileTransfer
             Server();
             ~Server();
 
-            const std::filesystem::path& workingDirectory() const;
-            bool workingDirectory(const std::filesystem::path& folder);
+            const std::filesystem::path& workspace() const;
+            bool workspace(const std::filesystem::path& folder);
 
             uint16_t port() const;
             bool port(uint16_t port);

@@ -95,9 +95,9 @@ int main(int argc, char *argv[])
             {
                 std::cout << "IP not available " << context.address << ". Used " << server.address() << std::endl;
             }
-            server.workingDirectory(context.stage);
+            server.workspace(context.stage);
             server.start();
-            std::cout << "Running in server mode. Used port " << server.port() << " and working on folder " << server.workingDirectory() <<  std::endl;
+            std::cout << "Running in server mode. Used port " << server.port() << " and working on folder " << server.workspace() <<  std::endl;
 
             std::cout << "Press 'Enter' to stop" << std::endl;
             getchar();
