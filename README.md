@@ -9,13 +9,21 @@ Very Simple Network File Transfer
 * Google Test 1.8.1 
 
 ## Build
-´make´
+`make`
 
 ## Run as server
-´./FileTransferTest -s -p 12000 -a 0.0.0.0 -f /copied_files/´
+`./FileTransferTest -s -p 12000 -a 0.0.0.0 -f /copied_files/`
+* `-s` - Run in server mode.
+* `-p` - Port to handle requests.
+* `-a` - Binding address.
+* `-f` - Folder to store the received files.
 
 ## Run as client
-´./FileTransferTest -c -p 12000 -a 0.0.0.0 -f /myfile.txt´
+`./FileTransferTest -c -p 12000 -a 0.0.0.0 -f /myfile.txt`
+* `-c` - Run in client mode.
+* `-p` - Connection port.
+* `-a` - Connection address.
+* `-f` - File to copy.
 
 ## Run unit tests
-´./FileTransferTest´
+`./FileTransferTest`
