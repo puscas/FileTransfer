@@ -85,14 +85,15 @@ TEST(TestServer, Address02) {
 
 TEST(TestClient, ClientPath01) {
     Client client;
-    const auto demo_file(std::filesystem::current_path() / "cpp/test/demo.jpg");
+    const auto demo_file(std::filesystem::current_path() / "assets/demo.jpg");
     ASSERT_TRUE(client.file(demo_file));
     ASSERT_EQ(demo_file, client.file());
 }
 
 TEST(TestSend, SendFile01) {
-    const auto demo_file(std::filesystem::current_path() / "cpp/test/demo.jpg");
-    const auto workspace("/tmp/");
+    const auto demo_file(std::filesystem::current_path() / "assets/demo.jpg");
+    const auto workspace(std::filesystem::path("/tmp/"));
+    const auto copied_file(workspace / "demo.jpg");
 
     std::mutex m;
     std::condition_variable cv;
@@ -123,8 +124,9 @@ TEST(TestSend, SendFile01) {
     ASSERT_FALSE(client.stop());
     ASSERT_FALSE(server.stop());
     cv.notify_all();
-}
 
+    ASSERT_EQ(std::filesystem::file_size(demo_file), std::filesystem::file_size(copied_file));
+}
 
 int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);

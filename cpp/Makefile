@@ -34,3 +34,6 @@ $(OBJECT_DIR):
 
 all: $(PROJECT)
 
+clean:
+	rm -f $(OBJECT_DIR)/*.o 
+

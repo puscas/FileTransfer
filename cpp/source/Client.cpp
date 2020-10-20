@@ -21,6 +21,9 @@ struct Client::Impl
     boost::thread_group m_thread_group;
     boost::asio::io_service m_io_service;
 
+    uint64_t m_bandwidth{0};
+    uint64_t m_sleep{0};
+
     Impl()
     {
     }
@@ -153,6 +156,11 @@ struct Client::Impl
                     header.complete = (read == maximum ? 0 : 1);
                     socket.send(boost::asio::buffer(reinterpret_cast<void*>(&data), sizeof(data)));
                     offset += header.data_size;
+
+                    if(m_sleep)
+                    {
+                        std::this_thread::sleep_for(std::chrono::nanoseconds(m_sleep));
+                    }
                 }
                 while ( read == maximum );
 
@@ -172,6 +180,25 @@ struct Client::Impl
     bool
     is_running() const
     {
+        return false;
+    }
+
+    uint64_t
+    bandwidth() const
+    {
+        return m_bandwidth;
+    }
+
+    bool
+    bandwidth(uint64_t bandwidth)
+    {
+        const uint64_t minimum{1024};
+        if(bandwidth >= minimum)
+        {
+            m_bandwidth = bandwidth;
+            m_sleep = (minimum * 1'000'000'000) / m_bandwidth;
+            return true;
+        }
         return false;
     }
 };
@@ -237,4 +264,16 @@ bool
 Client::is_running() const
 {
     return m_pimpl->is_running();
+}
+
+uint64_t
+Client::bandwidth() const
+{
+    return m_pimpl->bandwidth();
+}
+
+bool
+Client::bandwidth(uint64_t bandwidth)
+{
+    return m_pimpl->bandwidth(bandwidth);
 }

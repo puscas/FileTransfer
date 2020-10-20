@@ -29,5 +29,8 @@ namespace FileTransfer
             bool stop();
 
             bool is_running() const;
+
+            uint64_t bandwidth() const;
+            bool bandwidth(uint64_t bandwidth);
     };
 }

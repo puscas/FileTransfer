@@ -21,6 +21,7 @@ namespace
         Mode mode{Mode::UNKNOWN};
         uint16_t port{0};
         uint32_t address{0};
+        uint64_t bandwidth{0};
         std::string stage;
     };
 
@@ -40,6 +41,21 @@ int main(int argc, char *argv[])
     using namespace std::chrono_literals;
 
     std::cout << "## File Transfer ##" << std::endl;
+
+    if(argc < 5)
+    {
+        std::cout << "Invalid arguments!" << std::endl << std::endl;
+        std::cout << "Commands::" << std::endl;
+        std::cout << "-s : Set program to run as a server." << std::endl;
+        std::cout << "-c : Set program to run as a client." << std::endl;
+        std::cout << "-p : Port to use as a server or port to connect as a client." << std::endl;
+        std::cout << "-a : Address to use as a server or address to connect as a client." << std::endl;
+        std::cout << "-f : Folder to store the assets when used as a server. Full path to the file to send as a client." << std::endl;
+        std::cout << "-b : Maximum bandwidth to use as a client. Bandwidth is in Bps and the minimum is 1024 Bps." << std::endl << std::endl;
+        std::cout << "Server example:: ./FileTransfer -s -p 12000 -f /home/user/Desktop/out/ -a 192.168.1.136" << std::endl;
+        std::cout << "Client example:: ./FileTransfer -c -p 12000 -f /home/user/Desktop/demo.jpg -a 192.168.1.136" << std::endl;
+        return 1;
+    }
 
     Context context;
     for (int count{ 0 }; count < argc; ++count)
@@ -78,6 +94,13 @@ int main(int argc, char *argv[])
                 context.stage = argv[count];
             }
         }
+        else if(argument.compare("-b") == 0)
+        {
+            if(++count < argc )
+            {
+                context.bandwidth = std::stoull(argv[count]);
+            }
+        }
     }
 
     print_context(context);
@@ -110,6 +133,7 @@ int main(int argc, char *argv[])
             FileTransfer::Client client;
             client.port(context.port);
             client.address(context.address);
+            client.bandwidth(context.bandwidth);
             client.file(context.stage);
             client.send();
 
