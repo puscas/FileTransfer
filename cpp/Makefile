@@ -6,7 +6,7 @@ OBJECT_DIR := objects
 TESTS_DIR := test
 
 
-CXX := g++ -std=c++17 -I $(INCLUDE_DIR) -I /usr/include -O0 -g
+CXX := g++ -std=c++17 -I $(INCLUDE_DIR) -I /usr/include -O2
 CXXFLAGS := -c -Wall -DASIO_STANDALONE -pthread
 LDFFLAGS := -lboost_system -pthread -lboost_thread
 TEST_LDFLAGS := -lgtest -lgtest_main -L /usr/lib -L /usr/lib/x86_64-linux-gnu
