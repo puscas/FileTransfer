@@ -19,11 +19,12 @@ Very Simple Network File Transfer
 * `-f` - Folder to store the received files.
 
 ## Run as client
-`./FileTransferTest -c -p 12000 -a 0.0.0.0 -f /myfile.txt`
+`./FileTransferTest -c -p 12000 -a 0.0.0.0 -f /myfile.txt -b 1024`
 * `-c` - Run in client mode.
 * `-p` - Connection port.
 * `-a` - Connection address.
 * `-f` - File to copy.
+* `-b` - Maximum bandwidth to use in Bps. Minimum is 1024 Bps.
 
 ## Run unit tests
 `./FileTransferTest`
